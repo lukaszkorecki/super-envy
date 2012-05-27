@@ -1,5 +1,5 @@
 require "super-envy/version"
+require "super-envy/extender"
 
 module SuperEnvy
-  # Your code goes here...
 end
