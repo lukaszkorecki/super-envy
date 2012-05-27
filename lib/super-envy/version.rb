@@ -1,5 +1,3 @@
-module Super
-  module Envy
-    VERSION = "0.0.1"
-  end
+module SuperEnvy
+  VERSION = "0.0.1"
 end

@@ -4,12 +4,12 @@ require "super-envy/version"
 
 Gem::Specification.new do |s|
   s.name        = "super-envy"
-  s.version     = Super::Envy::VERSION
+  s.version     = SuperEnvy::VERSION
   s.authors     = ["Łukasz Korecki"]
   s.email       = ["lukasz@coffeesounds.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Convenience wrapper around ENV}
+  s.description = %q{If you find youself using ENVironment variables very often, you really want to use SuperEnvy}
 
   s.rubyforge_project = "super-envy"
 
@@ -19,6 +19,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # specify any dependencies here; for example:
-  # s.add_development_dependency "rspec"
-  # s.add_runtime_dependency "rest-client"
+  s.add_development_dependency "rspec"
 end

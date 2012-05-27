@@ -1,7 +1,5 @@
 require "super-envy/version"
 
-module Super
-  module Envy
-    # Your code goes here...
-  end
+module SuperEnvy
+  # Your code goes here...
 end
