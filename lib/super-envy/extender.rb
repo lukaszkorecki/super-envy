@@ -3,11 +3,8 @@ module SuperEnvy
 
     def initialize hash
       @hash = hash
-      @acc_proc = lambda { |key| }
-      @chk_proc = lambda { |key| ! @hash[key].nil? }
       can_be_upgraded?
       create_methods!
-
     end
 
     private
