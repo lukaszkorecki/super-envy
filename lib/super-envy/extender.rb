@@ -18,6 +18,18 @@ module SuperEnvy
       end
     end
 
+
+    def method_missing name
+      # has_*? methods are defined during object creation
+      # so if it doesnt exist by now, it means that the key in hash
+      # doesn't exist either, therfore - we can safely return false
+      if name.match(/^has_(.*)\?$/)
+        false
+      else
+        super
+      end
+    end
+
     private
     def add_methods name, key
       acc = proc do |&b|
@@ -26,11 +38,19 @@ module SuperEnvy
       end
       def_meth name, &acc
 
-      chk = proc  do |&b|
+      chk = proc do
         v = @hash.fetch key
         not (v.nil? or v.empty?)
       end
+
       def_meth :"#{name}?", &chk
+
+
+      has = proc do
+        @hash.key? key
+      end
+
+      def_meth :"has_#{name}?",&has
     end
 
     def def_meth name, &block

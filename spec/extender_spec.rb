@@ -20,19 +20,27 @@ describe 'Extender' do
     let(:hash) { {:oi => 'yo', :foo => 'bar', :bar => ''} }
     let(:ext)  { SuperEnvy::Extender.new hash }
 
-    it 'defines accessor method' do
-      ext.oi.should == 'yo'
-    end
-
-    it 'defines question-marked boolean checker method (or whatever the name is) which checks if a variable is blank' do
-      ext.oi?.should == true
-      ext.bar?.should == false
-    end
+    context 'Accessors' do
+      it 'defines accessor method' do
+        ext.oi.should == 'yo'
+      end
 
 
-    it 'defines accesor method which accepts a block and returns result of that block' do
-      ext.foo { |val| val.reverse }.should == 'rab'
+      it 'defines accesor method which accepts a block and returns result of that block' do
+        ext.foo { |val| val.reverse }.should == 'rab'
+      end
 
+      context 'Query methods' do
+        it 'defines query method which checks if variable is blank' do
+          ext.oi?.should == true
+          ext.bar?.should == false
+        end
+
+        it 'defines has_<vname>? method which checks variable existence' do
+          ext.has_bar?.should == true
+          ext.has_missing_var?.should == false
+        end
+      end
     end
   end
 end
