@@ -40,7 +40,7 @@ and...
 ```ruby
 #!/usr/bin/env ruby
 require 'super-envy'
-if ES.names?
+if ES.has_names?
   puts "hello " + SE.names.join(', ')
 else
   puts 'no names!'
