@@ -3,8 +3,10 @@ module SuperEnvy
 
     def initialize hash
       @hash = hash
+      @acc_proc = lambda { |key| }
+      @chk_proc = lambda { |key| ! @hash[key].nil? }
       can_be_upgraded?
-      create_accessors!
+      create_methods!
 
     end
 
@@ -13,14 +15,29 @@ module SuperEnvy
       raise "This object is not a hash!" unless @hash.is_a? Hash
     end
 
-    def create_accessors!
+    def create_methods!
       @hash.keys.map {|k| [k.to_s.gsub('-', '_').to_sym , k ] }.each do |name,original_key|
-
-        puts "definiingin method: #{name}"
-        puts "with keyj #{original_key}"
-        puts "and value #{@hash[original_key]}"
-        self.define_method(name) { @hash[original_key] }
+        add_methods(name, original_key)
       end
+    end
+
+    private
+    def add_methods name, key
+      acc = proc do |&b|
+        v = @hash.fetch key
+        b ?  b.call(v) : v
+      end
+      def_meth name, &acc
+
+      chk = proc  do |&b|
+        v = @hash.fetch key
+        not (v.nil? or v.empty?)
+      end
+      def_meth :"#{name}?", &chk
+    end
+
+    def def_meth name, &block
+      self.class.send(:define_method, name, &block)
     end
   end
 end
