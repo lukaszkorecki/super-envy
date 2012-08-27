@@ -15,11 +15,10 @@ module SuperEnvy
     end
 
     def create_methods!
-      @hash.keys.map {|k| [k.to_s.gsub('-', '_').to_sym , k ] }.each do |name,original_key|
-        add_methods(name, original_key)
+      @hash.keys.each do |name|
+        add_methods name
       end
     end
-
 
     def method_missing name
 
@@ -38,26 +37,35 @@ module SuperEnvy
     end
 
     private
-    def add_methods name, key
+    def add_methods name
+      normalized_name, key = normalize_method_name(name), name
       acc = proc do |&b|
         v = @hash.fetch key
         b ?  b.call(v) : v
       end
-      def_meth name, &acc
+
+      def_meth normalized_name, &acc
 
       chk = proc do
         v = @hash.fetch key
-        not (v.nil? or v.empty?)
+        is_nil = v.nil?
+        if v.respond_to? :"empty?"
+          is_empty = v.empty?
+        else
+          is_empty = false
+        end
+        !(is_nil or is_empty)
       end
 
-      def_meth :"#{name}?", &chk
+      def_meth :"#{normalized_name}?", &chk
 
 
-      has = proc do
-        @hash.key? key
-      end
 
-      def_meth :"has_#{name}?",&has
+      def_meth :"has_#{normalized_name}?",&@ok
+    end
+
+    def normalize_method_name name
+      name.to_s.downcase.gsub(/[ -]/, '_').to_sym
     end
 
     def def_meth name, &block
