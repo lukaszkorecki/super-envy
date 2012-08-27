@@ -39,18 +39,19 @@ module SuperEnvy
     private
     def add_methods name
       normalized_name, key = normalize_method_name(name), name
+      value = @hash.fetch key
+
+      normalized_name, value = apply_type(normalized_name, value)
       acc = proc do |&b|
-        v = @hash.fetch key
-        b ?  b.call(v) : v
+        b ?  b.call(value) : value
       end
 
       def_meth normalized_name, &acc
 
       chk = proc do
-        v = @hash.fetch key
-        is_nil = v.nil?
-        if v.respond_to? :"empty?"
-          is_empty = v.empty?
+        is_nil = value.nil?
+        if value.respond_to? :"empty?"
+          is_empty = value.empty?
         else
           is_empty = false
         end
@@ -70,6 +71,23 @@ module SuperEnvy
 
     def def_meth name, &block
       self.class.send(:define_method, name, &block)
+    end
+
+
+    def apply_type name, value
+      r_arr = /_a$/
+      r_int = /_i$/
+      r_flo = /_f$/
+      case name
+      when r_arr
+        [ name.to_s.sub(r_arr,'').to_sym, value.split(',')]
+      when r_int
+        [ name.to_s.sub(r_int,'').to_sym, value.to_i]
+      when r_flo
+        [ name.to_s.sub(r_flo,'').to_sym, value.to_f]
+      else
+        [name, value]
+      end
     end
   end
 end
