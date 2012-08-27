@@ -3,6 +3,8 @@ module SuperEnvy
 
     def initialize hash
       @hash = hash
+      @ok = proc { true }
+      @nope = proc { false }
       can_be_upgraded?
       create_methods!
     end
@@ -20,11 +22,16 @@ module SuperEnvy
 
 
     def method_missing name
+
       # has_*? methods are defined during object creation
-      # so if it doesnt exist by now, it means that the key in hash
-      # doesn't exist either, therfore - we can safely return false
+      # but for unexisting keys we don't have them defined
+      # lets cache them by dynamicaly attaching them to the instance and
+      # make them return false
       if name.match(/^has_(.*)\?$/)
-        false
+        def_meth name, &@nope
+        def_meth name.to_s.sub('has_','').to_sym, &@nope
+
+        self.send name
       else
         super
       end
